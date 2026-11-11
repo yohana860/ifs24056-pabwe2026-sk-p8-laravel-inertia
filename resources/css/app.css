@@ -1,0 +1,44 @@
+@import 'tailwindcss';
+
+@source '../js/**/*.jsx';
+@source '../views/**/*.blade.php';
+
+@theme {
+    --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', serif;
+    --color-primary: #4f46e5;
+    --color-primary-dark: #3730a3;
+    --color-primary-light: #eef2ff;
+}
+
+/* Cursor pointer untuk seluruh tombol & menu interaktif (preflight Tailwind v4 me-reset ke default). */
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']),
+[role='menuitem'],
+a[href],
+summary,
+select,
+label[for],
+input[type='checkbox'],
+input[type='radio'],
+input[type='file'],
+input[type='submit'] {
+    cursor: pointer;
+}
+
+button:disabled,
+[aria-disabled='true'] {
+    cursor: not-allowed;
+}
+
+/* Tipografi hasil render Markdown (TOAST UI Viewer) pada halaman baca. */
+.reading .toastui-editor-contents {
+    font-size: 1.125rem;
+    line-height: 1.85;
+    color: #1e293b;
+}
+
+.reading .toastui-editor-contents p,
+.reading .toastui-editor-contents li {
+    font-size: 1.125rem;
+}
