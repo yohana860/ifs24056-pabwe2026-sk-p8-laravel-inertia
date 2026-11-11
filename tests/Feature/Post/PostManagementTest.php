@@ -8,7 +8,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
-use Tests\Support\FakeImage;
 use Tests\TestCase;
 
 class PostManagementTest extends TestCase
@@ -102,7 +101,7 @@ class PostManagementTest extends TestCase
         $this->actingAs($this->user)->post('/dashboard/posts', $this->payload(['is_published' => false]));
         $this->actingAs($this->user)->post('/dashboard/posts', $this->payload([
             'is_published' => false,
-            'cover' => FakeImage::make('cover.jpg'),
+            'cover' => UploadedFile::fake()->image('cover.jpg'),
         ]))->assertSessionHasNoErrors();
 
         $second = Post::orderByDesc('id')->first();
@@ -148,7 +147,7 @@ class PostManagementTest extends TestCase
         $this->put("/dashboard/posts/{$post->id}", $this->payload())->assertForbidden();
         $this->delete("/dashboard/posts/{$post->id}")->assertForbidden();
         $this->patch("/dashboard/posts/{$post->id}/publish")->assertForbidden();
-        $this->post("/dashboard/posts/{$post->id}/cover", ['cover' => FakeImage::make('a.jpg')])->assertForbidden();
+        $this->post("/dashboard/posts/{$post->id}/cover", ['cover' => UploadedFile::fake()->image('a.jpg')])->assertForbidden();
         $this->delete("/dashboard/posts/{$post->id}/cover")->assertForbidden();
 
         $this->assertSame('Milik orang lain', $post->fresh()->title);
@@ -194,7 +193,7 @@ class PostManagementTest extends TestCase
 
         $this->actingAs($this->user)->post("/dashboard/posts/{$post->id}", $this->payload([
             '_method' => 'put',
-            'cover' => FakeImage::make('baru.png'),
+            'cover' => UploadedFile::fake()->image('baru.png'),
         ]))->assertSessionHasNoErrors();
 
         Storage::disk('public')->assertExists($post->fresh()->cover_image_path);
@@ -210,7 +209,7 @@ class PostManagementTest extends TestCase
 
     public function test_destroy_own_post_removes_cover_file(): void
     {
-        $post = Post::factory()->for($this->user)->create(['cover_image_path' => FakeImage::make('c.jpg')->store('covers', 'public')]);
+        $post = Post::factory()->for($this->user)->create(['cover_image_path' => UploadedFile::fake()->image('c.jpg')->store('covers', 'public')]);
         $path = $post->cover_image_path;
 
         $this->actingAs($this->user)->delete("/dashboard/posts/{$post->id}")
@@ -240,11 +239,11 @@ class PostManagementTest extends TestCase
         $post = Post::factory()->for($this->user)->create();
         $this->actingAs($this->user);
 
-        $this->post("/dashboard/posts/{$post->id}/cover", ['cover' => FakeImage::make('a.jpg')])->assertSessionHas('success');
+        $this->post("/dashboard/posts/{$post->id}/cover", ['cover' => UploadedFile::fake()->image('a.jpg')])->assertSessionHas('success');
         $first = $post->fresh()->cover_image_path;
         Storage::disk('public')->assertExists($first);
 
-        $this->post("/dashboard/posts/{$post->id}/cover", ['cover' => FakeImage::make('b.webp')]);
+        $this->post("/dashboard/posts/{$post->id}/cover", ['cover' => UploadedFile::fake()->image('b.png')]);
         Storage::disk('public')->assertMissing($first);
 
         $current = $post->fresh()->cover_image_path;
@@ -260,7 +259,7 @@ class PostManagementTest extends TestCase
 
         $this->post("/dashboard/posts/{$post->id}/cover", [])->assertSessionHasErrors('cover');
         $this->post("/dashboard/posts/{$post->id}/cover", ['cover' => UploadedFile::fake()->create('x.svg', 5, 'image/svg+xml')])->assertSessionHasErrors('cover');
-        $this->post("/dashboard/posts/{$post->id}/cover", ['cover' => FakeImage::make('big.jpg')->size(4096)])->assertSessionHasErrors('cover');
+        $this->post("/dashboard/posts/{$post->id}/cover", ['cover' => UploadedFile::fake()->image('big.jpg')->size(4096)])->assertSessionHasErrors('cover');
 
         $this->assertNull($post->fresh()->cover_image_path);
     }
