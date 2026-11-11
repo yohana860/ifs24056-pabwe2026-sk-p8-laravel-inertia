@@ -9,6 +9,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
+use Tests\Support\FakeImage;
 use Tests\TestCase;
 
 class ProfileTest extends TestCase
@@ -88,11 +89,11 @@ class ProfileTest extends TestCase
     {
         $this->actingAs($this->user);
 
-        $this->put('/profile', $this->payload(['photo' => UploadedFile::fake()->image('a.jpg')]))->assertSessionHasNoErrors();
+        $this->put('/profile', $this->payload(['photo' => FakeImage::make('a.jpg')]))->assertSessionHasNoErrors();
         $first = $this->user->fresh()->profile_photo_path;
         Storage::disk('public')->assertExists($first);
 
-        $this->put('/profile', $this->payload(['photo' => UploadedFile::fake()->image('b.png')]));
+        $this->put('/profile', $this->payload(['photo' => FakeImage::make('b.png')]));
         Storage::disk('public')->assertMissing($first);
         Storage::disk('public')->assertExists($this->user->fresh()->profile_photo_path);
     }

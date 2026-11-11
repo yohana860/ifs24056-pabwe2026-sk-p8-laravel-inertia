@@ -6,9 +6,9 @@ use App\Features\Post\Models\Post;
 use App\Features\Post\Services\PostService;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tests\Support\FakeImage;
 use Tests\TestCase;
 
 class PostServiceTest extends TestCase
@@ -85,11 +85,11 @@ class PostServiceTest extends TestCase
 
     public function test_create_and_update_with_cover_replace_the_old_file(): void
     {
-        $post = $this->service->create(User::factory()->create(), $this->data(), UploadedFile::fake()->image('a.jpg'));
+        $post = $this->service->create(User::factory()->create(), $this->data(), FakeImage::make('a.jpg'));
         $first = $post->cover_image_path;
         Storage::disk('public')->assertExists($first);
 
-        $post = $this->service->update($post, $this->data(), UploadedFile::fake()->image('b.jpg'));
+        $post = $this->service->update($post, $this->data(), FakeImage::make('b.jpg'));
 
         Storage::disk('public')->assertMissing($first);
         Storage::disk('public')->assertExists($post->cover_image_path);
@@ -97,7 +97,7 @@ class PostServiceTest extends TestCase
 
     public function test_remove_cover_with_and_without_existing_file(): void
     {
-        $post = $this->service->create(User::factory()->create(), $this->data(), UploadedFile::fake()->image('a.jpg'));
+        $post = $this->service->create(User::factory()->create(), $this->data(), FakeImage::make('a.jpg'));
         $path = $post->cover_image_path;
 
         $post = $this->service->removeCover($post);
@@ -109,7 +109,7 @@ class PostServiceTest extends TestCase
 
     public function test_delete_removes_cover_file(): void
     {
-        $post = $this->service->create(User::factory()->create(), $this->data(), UploadedFile::fake()->image('a.jpg'));
+        $post = $this->service->create(User::factory()->create(), $this->data(), FakeImage::make('a.jpg'));
         $path = $post->cover_image_path;
 
         $this->service->delete($post);
