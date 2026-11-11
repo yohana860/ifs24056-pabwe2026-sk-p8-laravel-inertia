@@ -6,13 +6,20 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginUserAction
 {
-    /**
-     * Login dengan username ATAU email. Mengembalikan true bila kredensial valid.
-     */
-    public function execute(string $login, string $password, bool $remember = false): bool
-    {
-        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+    public function execute(
+        string $login,
+        string $password,
+        bool $remember = false
+    ): bool {
+        $login = trim($login);
 
-        return Auth::attempt([$field => $login, 'password' => $password], $remember);
+        $field = filter_var($login, FILTER_VALIDATE_EMAIL)
+            ? 'email'
+            : 'username';
+
+        return Auth::guard('web')->attempt([
+            $field => $login,
+            'password' => $password,
+        ], $remember);
     }
 }
