@@ -25,7 +25,7 @@ export default function Pagination({ links = [] }) {
                         {decode(link.label)}
                     </Link>
                 ) : (
-                    <span key={index} className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-1.5 text-sm text-slate-400">
+                    <span key={index} className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-1.5 text-sm text-slate-500">
                         {decode(link.label)}
                     </span>
                 ),

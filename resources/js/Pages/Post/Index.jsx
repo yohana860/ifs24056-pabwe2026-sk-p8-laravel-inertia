@@ -82,7 +82,7 @@ export default function Index({ posts, stats, filters, categories, ai }) {
                         {importing ? <Spinner /> : <UploadIcon className="h-4 w-4" />}
                         Impor Excel
                     </button>
-                    <input ref={fileInput} type="file" accept=".xlsx,.xls" className="hidden" onChange={importFile} />
+                    <input ref={fileInput} type="file" accept=".xlsx,.xls" aria-label="Pilih file Excel untuk diimpor" className="hidden" onChange={importFile} />
                     <a href="/dashboard/posts/export" className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
                         <DownloadIcon className="h-4 w-4" />
                         Ekspor Excel
@@ -98,7 +98,7 @@ export default function Index({ posts, stats, filters, categories, ai }) {
 
             <form onSubmit={searchPosts} className="relative mb-4">
                 <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-                <input type="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari artikel saya..." className="w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                <input type="search" aria-label="Cari artikel saya" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari artikel saya..." className="w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30" />
             </form>
 
             {/* List view (bukan card) */}

@@ -22,7 +22,7 @@ export default function UserList({ users, filters }) {
 
             <form onSubmit={submit} className="relative mb-4">
                 <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-                <input type="search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari nama, username, atau email..." className="w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                <input type="search" aria-label="Cari pengguna" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari nama, username, atau email..." className="w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30" />
             </form>
 
             <ul className="divide-y divide-slate-100 rounded-2xl border border-slate-200 bg-white shadow-sm">

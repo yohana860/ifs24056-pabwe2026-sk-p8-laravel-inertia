@@ -39,7 +39,7 @@ export default function Register() {
                     </form>
                     <p className="mt-6 text-center text-sm text-slate-500">
                         Sudah punya akun?{' '}
-                        <Link href="/login" className="font-semibold text-primary hover:underline">Masuk</Link>
+                        <Link href="/login" className="font-semibold text-primary underline">Masuk</Link>
                     </p>
                 </div>
             </div>

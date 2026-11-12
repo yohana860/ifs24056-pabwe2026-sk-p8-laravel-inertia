@@ -43,7 +43,7 @@ export default function Login({ login = '' }) {
 
                     <p className="mt-6 text-center text-sm text-slate-500">
                         Belum punya akun?{' '}
-                        <Link href="/register" className="font-semibold text-primary hover:underline">Daftar</Link>
+                        <Link href="/register" className="font-semibold text-primary underline">Daftar</Link>
                     </p>
                 </div>
             </div>

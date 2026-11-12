@@ -64,7 +64,7 @@ export default function Show({ post, categories }) {
                         {busy === 'cover' && <Spinner className="h-3 w-3" />}
                         {post.cover_url ? 'Ganti cover' : 'Unggah cover'}
                     </button>
-                    <input ref={coverInput} type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={uploadCover} />
+                    <input ref={coverInput} type="file" accept="image/png,image/jpeg,image/webp" aria-label="Pilih gambar cover" className="hidden" onChange={uploadCover} />
                     {post.cover_url && (
                         <button type="button" onClick={() => run('cover-del', 'delete', `/dashboard/posts/${post.id}/cover`)} disabled={busy === 'cover-del'} className="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 disabled:opacity-60">
                             {busy === 'cover-del' && <Spinner className="h-3 w-3" />}
