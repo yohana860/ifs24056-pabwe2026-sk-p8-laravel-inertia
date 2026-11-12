@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Support;
 
+use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 use Tests\TestCase;
 
 class RepositoryHygieneTest extends TestCase
@@ -53,17 +53,29 @@ class RepositoryHygieneTest extends TestCase
         $this->assertSame(['*', '!data/', '!.gitignore'], $cache);
     }
 
-    public function test_seeder_creates_default_accounts_and_sample_posts(): void
+    public function test_seeder_creates_default_accounts_and_sample_posts_and_is_idempotent(): void
     {
         $this->seed(DatabaseSeeder::class);
+        $this->seed(DatabaseSeeder::class); // dijalankan dua kali: tidak boleh duplikat / error
 
         $admin = User::where('username', 'admin')->firstOrFail();
         $member = User::where('username', 'member')->firstOrFail();
 
+        $this->assertSame(2, User::count());
         $this->assertTrue($admin->isAdmin());
+        $this->assertFalse($member->isAdmin());
         $this->assertTrue(Hash::check('admin', $admin->password));
         $this->assertTrue(Hash::check('member', $member->password));
         $this->assertSame(7, $member->posts()->count());
         $this->assertSame(1, $member->posts()->where('is_published', false)->count());
+        $this->assertSame(6, $member->posts()->where('is_published', true)->whereNotNull('published_at')->count());
+    }
+
+    public function test_seeder_does_not_depend_on_dev_only_packages(): void
+    {
+        $seeder = (string) file_get_contents(database_path('seeders/DatabaseSeeder.php'));
+
+        $this->assertStringNotContainsString('::factory()', $seeder);
+        $this->assertStringNotContainsString('fake()', $seeder);
     }
 }
