@@ -15,18 +15,15 @@ export default defineConfig({
         }),
 
         react(),
-
         tailwindcss(),
     ],
 
     build: {
-        // Menghasilkan source map untuk JavaScript produksi.
-        sourcemap: true,
-
-        // Batas peringatan ukuran chunk.
         chunkSizeWarningLimit: 1000,
 
-        // Minifikasi JavaScript dan CSS.
+        // Aktifkan source maps produksi.
+        sourcemap: true,
+
         minify: 'esbuild',
         cssMinify: true,
     },
