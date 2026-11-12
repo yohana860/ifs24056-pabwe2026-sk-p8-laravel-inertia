@@ -71,6 +71,18 @@ class AuthTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_failed_login_keeps_the_typed_username_and_page_shares_csrf_token(): void
+    {
+        User::factory()->create(['username' => 'penulis1', 'password' => 'secret123']);
+
+        $this->from('/login')->post('/login', ['login' => 'penulis1', 'password' => 'salah'])->assertRedirect('/login');
+
+        $this->get('/login')->assertInertia(fn (Assert $page) => $page
+            ->component('Auth/Login')
+            ->where('login', 'penulis1')
+            ->where('csrf_token', fn ($token) => is_string($token) && $token !== ''));
+    }
+
     public function test_login_requires_fields(): void
     {
         $this->post('/login', [])->assertSessionHasErrors(['login', 'password']);

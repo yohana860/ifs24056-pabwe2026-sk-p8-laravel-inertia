@@ -18,22 +18,14 @@ class AuthController extends Controller
 {
     public function showLogin(): Response
     {
-        return Inertia::render('Auth/Login');
+        return Inertia::render('Auth/Login', ['login' => old('login', '')]);
     }
 
-    public function login(
-        LoginRequest $request,
-        LoginUserAction $action
-    ): RedirectResponse {
+    public function login(LoginRequest $request, LoginUserAction $action): RedirectResponse
+    {
         $credentials = $request->validated();
 
-        $success = $action->execute(
-            $credentials['login'],
-            $credentials['password'],
-            $request->boolean('remember')
-        );
-
-        if (! $success) {
+        if (! $action->execute($credentials['login'], $credentials['password'], $request->boolean('remember'))) {
             throw ValidationException::withMessages([
                 'login' => 'Username/email atau password salah.',
             ]);
@@ -41,13 +33,9 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        $user = Auth::user();
-
-        $destination = $user->isAdmin()
-            ? route('admin.users.index')
-            : route('posts.index');
-
-        return redirect()->intended($destination);
+        return redirect()->intended(
+            $request->user()->isAdmin() ? route('admin.users.index') : route('posts.index')
+        );
     }
 
     public function showRegister(): Response
@@ -55,25 +43,17 @@ class AuthController extends Controller
         return Inertia::render('Auth/Register');
     }
 
-    public function register(
-        RegisterRequest $request,
-        RegisterUserAction $action
-    ): RedirectResponse {
-        $user = $action->execute($request->validated());
-
-        Auth::login($user);
-
+    public function register(RegisterRequest $request, RegisterUserAction $action): RedirectResponse
+    {
+        Auth::login($action->execute($request->validated()));
         $request->session()->regenerate();
 
-        return redirect()
-            ->route('posts.index')
-            ->with('success', 'Akun berhasil dibuat. Selamat menulis!');
+        return redirect()->route('posts.index')->with('success', 'Akun berhasil dibuat. Selamat menulis!');
     }
 
     public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
